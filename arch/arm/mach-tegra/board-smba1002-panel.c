@@ -38,6 +38,7 @@
 #include "gpio-names.h"
 #include "board.h"
 #include "board-smba1002.h"
+#include "tegra2_host1x_devices.h"
 
 /*panel power on sequence timing*/
 #define smba_pnl_to_lvds_ms	0
@@ -428,7 +429,7 @@ int __init smba_panel_init(void)
 #endif
 
 #ifdef CONFIG_TEGRA_GRHOST
-	err = nvhost_device_register(&tegra_grhost_device);
+	err = tegra2_register_host1x_devices();
 	if (err)
 		return err;
 #endif
@@ -450,11 +451,21 @@ int __init smba_panel_init(void)
 
 	/* Copy the bootloader fb to the fb. */
 	tegra_move_framebuffer(tegra_fb_start, tegra_bootloader_fb_start,
-		tegra_fb_size, tegra_bootloader_fb_size);	
+		min(tegra_fb_size, tegra_bootloader_fb_size));
 		
 	/* Copy the bootloader fb to the fb2. */
-	tegra_move_framebuffer(tegra_fb2_start, tegra_bootloader_fb_start,
-		tegra_fb2_size, tegra_bootloader_fb_size);
+/*	tegra_move_framebuffer(tegra_fb2_start, tegra_bootloader_fb_start,
+		tegra_fb2_size, tegra_bootloader_fb_size);*/
+       /*
+        * If the bootloader fb2 is valid, copy it to the fb2, or else
+        * clear fb2 to avoid garbage on dispaly2.
+        */
+       if (tegra_bootloader_fb2_size)
+               tegra_move_framebuffer(tegra_fb2_start,
+                       tegra_bootloader_fb2_start,
+                       min(tegra_fb2_size, tegra_bootloader_fb2_size));
+       else
+	    tegra_clear_framebuffer(tegra_fb2_start, tegra_fb2_size);
 
 
 #if defined(CONFIG_TEGRA_GRHOST) && defined(CONFIG_TEGRA_DC)
