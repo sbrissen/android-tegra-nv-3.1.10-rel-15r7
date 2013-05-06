@@ -61,7 +61,7 @@ enum {
 
 /* battery status value bits */
 #define BATTERY_INIT_DONE		0x80
-#define BATTERY_DISCHARGING		224//0x40
+#define BATTERY_DISCHARGING		0x40
 #define BATTERY_FULL_CHARGED		0x20
 #define BATTERY_FULL_DISCHARGED		0x10
 
@@ -583,7 +583,6 @@ static int smba_resume(struct i2c_client *client)
 #endif
 
 static const struct i2c_device_id smba_id[] = {
-	//{ "bq20z75", 0 },
 	{ "smba-battery", 0 },
 	{}
 };
