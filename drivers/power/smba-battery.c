@@ -61,7 +61,7 @@ enum {
 
 /* battery status value bits */
 #define BATTERY_INIT_DONE		0x80
-#define BATTERY_DISCHARGING		0x40
+#define BATTERY_DISCHARGING		224//0x40
 #define BATTERY_FULL_CHARGED		0x20
 #define BATTERY_FULL_DISCHARGED		0x10
 
